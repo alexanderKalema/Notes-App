@@ -5,25 +5,27 @@ class SampleContainer extends StatelessWidget {
 
 
 
-  bool chooser;
-  Widget? child;
-  Row? row;
+  Widget? mychild;
+  Color? mycolor;
 
 
-  SampleContainer({this.child,  this.row , required this.chooser});
+  SampleContainer({this.mychild , this.mycolor});
 
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
-      height: Sizes.getTotalHeight(context) * 0.1,
-      width: Sizes.getTotalWidth(context) * 0.8,
-      decoration: const BoxDecoration(
-          color: const Color.fromRGBO(242,243,247,1),
-          borderRadius:  BorderRadius.all(Radius.circular(29)),
+
+      margin: EdgeInsets.only(bottom: 10),
+      height: Sizes.getTotalHeight(context) * 0.085,
+      width: Sizes.getTotalWidth(context) * 0.9,
+      decoration:  BoxDecoration(
+        color: mycolor?? Color.fromRGBO(242,243,247,1),
+        borderRadius:  BorderRadius.all(Radius.circular(20)),
 
           ),
-      child: chooser? row : child,
+      child: mychild,
     );
   }
 }
