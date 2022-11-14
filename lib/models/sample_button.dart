@@ -37,8 +37,9 @@ class SampleButton extends StatelessWidget {
 class SmallButton extends StatelessWidget {
   Widget mychild;
   final VoidCallback? callback;
+  Color? background;
 
-  SmallButton({required this.mychild, this.callback});
+  SmallButton({required this.mychild, this.callback, this.background});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,7 @@ class SmallButton extends StatelessWidget {
         if (states.contains(MaterialState.pressed)) {
     return Color(0xFFffcb47);
     }
-    return Color(0xFFffcb47).withOpacity(0.15);
+    return background ?? Colors.white;
                   }
   ),
     shape: MaterialStateProperty.all<RoundedRectangleBorder>(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:nibret_kifel/models/sample_container.dart';
 import 'package:nibret_kifel/models/sample_text_field.dart';
 import 'package:nibret_kifel/utils/dialogs/error_dialog.dart';
@@ -11,6 +12,7 @@ import '../services/auth/auth_exceptions.dart';
 import '../services/auth/bloc/auth_bloc.dart';
 import '../services/auth/bloc/auth_event.dart';
 import '../services/auth/bloc/auth_state.dart';
+import '../utils/dialogs/loading_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -76,18 +78,18 @@ class _LoginViewState extends State<LoginView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
                       SizedBox(height: 100),
-                      Text("Sign In",
+                      Text("Sign in",
                           style: TextStyle(
                               fontSize: 40,
-                              //letterSpacing: 1.0,
+                              letterSpacing: 1.0,
                               fontWeight: FontWeight.bold,
-                              fontFamily: "InterSemiBold")),
+                              fontFamily: "TailwindRegular")),
                       SizedBox(height: 10),
                       Text("Welcome back, let's input your login information",
                           style: TextStyle(
                               letterSpacing: 0.6,
                               fontWeight: FontWeight.bold,
-                              fontFamily: "NeofontRoman"))
+                              fontFamily: "TailwindSRegular"))
                     ],
                   ),
                 ),
@@ -110,28 +112,37 @@ class _LoginViewState extends State<LoginView> {
                     //mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SampleContainer(
-                          mychild: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 25),
-                        child: Row(
-                          children: [
-                            Icon(Icons.accessibility),
-                            SizedBox(width: 15),
-                            Text("Sign in with",
-                                style: TextStyle(
-                                    letterSpacing: 0.6,
-                                    fontWeight: FontWeight.w700,
-                                    fontFamily: "NeofontRoman")),
-                            Text(" Google",
-                                style: TextStyle(
-                                    letterSpacing: 0.6,
-                                    fontWeight: FontWeight.w100,
-                                    fontFamily: "NeofontBold")),
-                            Expanded(child: Container()),
-                            const Icon(Icons.arrow_forward)
-                          ],
-                        ),
-                      )),
+                      InkWell(
+                        onTap: (){
+                          context.read<AuthBloc>().add(
+                            const AuthEventLoginWithGoogle(),
+                          );
+                        },
+                        child: SampleContainer(
+                            mychild: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 25),
+                          child: Row(
+                            children: [
+                              FaIcon(FontAwesomeIcons.google , color: Color(0xFFffcb47),),
+                              SizedBox(width: 15),
+                              Text("Sign in with",
+                                  style: TextStyle(
+                                      letterSpacing: 0.7,
+                                      fontSize: 16,
+                                      //fontWeight: FontWeight.w700,
+                                      fontFamily: "TailwindSRegular")),
+                              Text(" Google",
+                                  style: TextStyle(
+                                      letterSpacing: 0.7,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "TailwindSRegular")),
+                              Expanded(child: Container()),
+                              const Icon(Icons.arrow_forward)
+                            ],
+                          ),
+                        )),
+                      ),
                       SizedBox(height: 30),
                       Container(
                           padding: EdgeInsets.symmetric(horizontal: 5),
@@ -172,13 +183,12 @@ class _LoginViewState extends State<LoginView> {
                         autocorrect: false,
                         keyboardType: true,
                       ),
-                      SampleTextField(
-                        text: "Password",
-                        controller: _password,
-                        obscureText: true,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                      ),
+                    SampleTextField(text: "Password",
+                      controller: _password,
+                      enableSuggestions: false,
+                      autocorrect: false,
+                      obscureText: true,
+                    ),
                       SizedBox(height: 30),
                       SampleButton(
                         mychild: Row(
@@ -188,7 +198,7 @@ class _LoginViewState extends State<LoginView> {
                                 style: TextStyle(
                                   //fontSize: 40,
                                   fontWeight: FontWeight.w500,
-                                  fontFamily: "InterBold",
+                                  fontFamily: "TailwindRegular",
                                   color: Colors.black.withOpacity(0.9),
                                 )),
                             SizedBox(
@@ -212,6 +222,22 @@ class _LoginViewState extends State<LoginView> {
 
                         },
                       ),
+                      Center(
+                        child:SmallButton(
+                            mychild: Text(
+                              "Forgot password?",
+                              style: TextStyle(color: Color(0xFFffcb47)),
+                            ),
+                            callback: () {
+
+
+                              context.read<AuthBloc>().add(
+                                const AuthEventForgotPassword());
+
+                            })
+                      ),
+
+
                       SizedBox(
                         height: 20,
                       ),
@@ -230,6 +256,7 @@ class _LoginViewState extends State<LoginView> {
                                 width: 10,
                               ),
                               SmallButton(
+                                background: Color(0xFFffcb47).withOpacity(0.15),
                                   mychild: Text(
                                     "Register",
                                     style: TextStyle(color: Color(0xFFffcb47)),

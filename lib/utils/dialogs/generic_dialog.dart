@@ -83,14 +83,14 @@ Future<T?> showGenericDialog<T>({
                                             fontFamily: "PoppinsRegular");
                                       }),
                                       overlayColor: MaterialStateProperty.all<Color>(
-                            (optionTitle =="yes" || optionTitle =="Ok")? Color(0xFFffcb47):Colors.grey.withOpacity(0.1),),
+                            (optionTitle =="Yes"||optionTitle =="Log out"  || optionTitle =="Ok")? Color(0xFFffcb47):Colors.grey.withOpacity(0.1),),
                                       foregroundColor:  MaterialStateProperty.resolveWith((states) =>
-                                      (optionTitle =="yes" || optionTitle =="Ok")? Colors.white:Colors.grey.withOpacity(0.5)
+                                      (optionTitle =="Yes"||optionTitle =="Log out"  || optionTitle =="Ok")? Colors.white:Colors.grey.withOpacity(0.5)
                                       ),
                                       backgroundColor:
                                           MaterialStateColor.resolveWith((states) {
 
-                                        return (optionTitle =="yes" || optionTitle =="Ok")? Color(0xFFffcb47).withOpacity(0.9):Colors.grey.withOpacity(0.1);
+                                        return (optionTitle =="Yes"||optionTitle =="Log out"  || optionTitle =="Ok")? Color(0xFFffcb47).withOpacity(0.9):Colors.grey.withOpacity(0.1);
                                       }),
                                       shape: MaterialStateProperty.all<
                                               RoundedRectangleBorder>(

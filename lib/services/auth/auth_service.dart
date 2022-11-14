@@ -2,46 +2,61 @@ import 'package:nibret_kifel/services/auth/auth_provider.dart';
 import 'package:nibret_kifel/services/auth/auth_user.dart';
 import 'package:nibret_kifel/services/auth/firebase_auth_provider.dart';
 
+import 'bloc/google_sign_in_provider.dart';
+
 class AuthService implements AuthProvider {
-  final AuthProvider provider;
+  final AuthProvider FirebaseProvider;
+   GoogleSignInProvider? googleProvider;
 
-  const AuthService(this.provider);
 
-  factory AuthService.firebase() => AuthService(FirebaseAuthProvider());
+   AuthService({required this.FirebaseProvider, this.googleProvider});
+
+  factory AuthService.firebase() => AuthService( FirebaseProvider: FirebaseAuthProvider());
+  factory AuthService.googleLogin() => AuthService(googleProvider:GoogleSignInProvider(), FirebaseProvider: FirebaseAuthProvider());
+
+  Future<void> googleLogIn() async =>  await googleProvider?.googleLogin();
+
 
   @override
   Future<AuthUser> createUser({
     required String email,
     required String password,
   }) =>
-      provider.createUser(
+      FirebaseProvider.createUser(
         email: email,
         password: password,
       );
 
   @override
-  AuthUser? get currentUser => provider.currentUser;
+  AuthUser? get currentUser => FirebaseProvider.currentUser;
+
+  AuthUser? get googleUser => googleProvider?.currentUser;
 
   @override
   Future<AuthUser> logIn({
     required String email,
     required String password,
   }) =>
-      provider.logIn(
+      FirebaseProvider.logIn(
         email: email,
         password: password,
       );
 
   @override
-  Future<void> logOut() => provider.logOut();
+  Future<void> logOut() => FirebaseProvider.logOut();
+
+
+
+  Future<void>? googlelogOut() =>  googleProvider?.logOut();
+
 
   @override
-  Future<void> sendEmailVerification() => provider.sendEmailVerification();
+  Future<void> sendEmailVerification() => FirebaseProvider.sendEmailVerification();
 
   @override
-  Future<void> initialize() => provider.initialize();
+  Future<void> initialize() => FirebaseProvider.initialize();
 
   @override
   Future<void> sendPasswordReset({required String toEmail}) =>
-      provider.sendPasswordReset(toEmail: toEmail);
+      FirebaseProvider.sendPasswordReset(toEmail: toEmail);
 }

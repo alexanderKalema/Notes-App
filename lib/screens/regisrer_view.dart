@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nibret_kifel/models/sample_container.dart';
@@ -10,29 +12,41 @@ import '../services/auth/auth_exceptions.dart';
 import '../services/auth/bloc/auth_bloc.dart';
 import '../services/auth/bloc/auth_event.dart';
 import '../services/auth/bloc/auth_state.dart';
+import '../services/cloud/firebase_cloud_storage.dart';
 import '../utils/dialogs/error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
 
   @override
-  State<RegisterView> createState() => _RegisterViewState();
+  State<RegisterView> createState() => RegisterViewState();
 }
 
-class _RegisterViewState extends State<RegisterView> {
+class RegisterViewState extends State<RegisterView> {
 
   late final TextEditingController _email;
   late final TextEditingController _password;
+  late final TextEditingController _firstname;
+  late final TextEditingController _lastname;
+   static String fnamee ="";
+  static String lnamee ="";
+
+
 
   @override
   void initState() {
     _email = TextEditingController();
     _password = TextEditingController();
+    _firstname = TextEditingController();
+    _lastname = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
+
+    _firstname.dispose();
+    _lastname.dispose();
     _email.dispose();
     _password.dispose();
     super.dispose();
@@ -104,7 +118,7 @@ class _RegisterViewState extends State<RegisterView> {
                ),
                Expanded(
                  child: Container(
-                   padding: const EdgeInsets.fromLTRB(30, 30, 30, 20),
+                   padding: const EdgeInsets.fromLTRB(30, 5, 30, 20),
                    width: Sizes.getTotalWidth(context),
                    decoration: const BoxDecoration(
                        color: Colors.white,
@@ -121,73 +135,62 @@ class _RegisterViewState extends State<RegisterView> {
                      //mainAxisAlignment: MainAxisAlignment.start,
                      crossAxisAlignment: CrossAxisAlignment.start,
                      children: [
-                       SampleContainer(
 
-                           mychild:
-                           Container(
-                             padding: EdgeInsets.symmetric(horizontal: 25),
-                             child: Row(
-                         children: [
-                             Icon(Icons.accessibility),
-                           SizedBox(width: 15),
 
-                             Text("Register with",
-                                 style: TextStyle(
-                                     letterSpacing: 0.6,
-                                 fontWeight: FontWeight.w700,
-                                 fontFamily: "NeofontRoman"
-                             )
-                             ),
-                           Text(" Google",
-                               style: TextStyle(
-                                   letterSpacing: 0.6,
-                                   fontWeight: FontWeight.w100,
-                                   fontFamily: "NeofontBold"
-                               )
-                           ),
-
-                           Expanded(child: Container()),
-                             const Icon(
-                               Icons.arrow_forward
-                             )
-                         ],
-                       ),
-                           )
-                       ),
                        SizedBox(height:30),
                        Container(
 
                           padding: EdgeInsets.symmetric(horizontal: 5),
-                           child: Row(children:[
-                         Expanded(
-                           child: Padding(
-                             padding:EdgeInsets.symmetric(horizontal:10.0),
-                             child:Container(
-                               height:1.0,
-                            //   width:Sizes.getTotalWidth(context)*0.2,
-                               color:Colors.black.withOpacity(0.2),),),
-                         ),
-                          const Text("Or Register with Email",
-                             style: TextStyle(
-                                 letterSpacing: 0.6,
-                                 fontWeight: FontWeight.w700,
-                                 fontFamily: "NeofontRoman"
-                             )),
+                           child: Column(
+                             children: [
+                               Row(children: [
+                                 Expanded(
+                                   child: Padding(
+                                     padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                     child: Container(
+                                       height: 1.0,
+                                       //   width:Sizes.getTotalWidth(context)*0.2,
+                                       color: Colors.black.withOpacity(0.2),
+                                     ),
+                                   ),
+                                 ),
+                                 const Text("Optional Name Field",
+                                     style: TextStyle(
+                                         letterSpacing: 0.6,
+                                         fontWeight: FontWeight.w700,
+                                         fontFamily: "NeofontRoman")),
+                                 Expanded(
+                                   child: Padding(
+                                     padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                     child: Container(
+                                       height: 1.0,
+                                       // width:Sizes.getTotalWidth(context)*0.2,
+                                       color: Colors.black.withOpacity(0.2),
+                                     ),
+                                   ),
+                                 ),
+                               ]),
+                               SizedBox(height:24),
+                               SampleTextField(text: "First Name",controller: _firstname,
+                               ),
+                               SampleTextField(text: "Last Name",controller: _lastname,
+                               ),
+                               SizedBox(height:11),
+                               Row(children:[
+                                 Expanded(
+                                   child: Padding(
+                                     padding:EdgeInsets.symmetric(horizontal:10.0),
+                                     child:Container(
+                                       height:1.0,
+                                       //   width:Sizes.getTotalWidth(context)*0.2,
+                                       color:Colors.black.withOpacity(0.2),),),
+                                 ),
 
-                         Expanded(
-                           child: Padding(
-                             padding:EdgeInsets.symmetric(horizontal:10.0),
-                             child:Container(
-                               height:1.0,
-                              // width:Sizes.getTotalWidth(context)*0.2,
-                               color:Colors.black.withOpacity(0.2),),),
-                         ),
-
-                       ])),
+                               ]),
+                             ],
+                           )),
                        const SizedBox(height: 20,),
-                       SampleTextField(text: "Full Name",
 
-                       ),
                         SampleTextField(text: "Email",
                          controller: _email,
                          enableSuggestions: false,
@@ -195,7 +198,6 @@ class _RegisterViewState extends State<RegisterView> {
                          keyboardType: true,),
                         SampleTextField(text: "Password",
                          controller: _password,
-                         obscureText: true,
                          enableSuggestions: false,
                          autocorrect: false,
                           ),
@@ -217,8 +219,12 @@ class _RegisterViewState extends State<RegisterView> {
                              ],
                            ),
                          callback:  () async {
+
+
                            final email = _email.text;
                            final password = _password.text;
+                            fnamee =_firstname.text;
+                           lnamee= _lastname.text;
                            context.read<AuthBloc>().add(
                              AuthEventRegister(
                                email,
@@ -249,7 +255,7 @@ class _RegisterViewState extends State<RegisterView> {
                                        color: Color(0xFFffcb47))),
                                callback:() {
                                  context.read<AuthBloc>().add(
-                                   const AuthEventLogOut(),
+                                    AuthEventLogOut(),
                                  );
                                },)
 

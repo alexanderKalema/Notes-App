@@ -5,8 +5,12 @@ import 'package:nibret_kifel/services/auth/bloc/auth_event.dart';
 import 'package:nibret_kifel/services/auth/bloc/auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc(AuthService provider)
+  AuthBloc(AuthService provider , )
       : super(const AuthStateUninitialized(isLoading: true)) {
+
+
+
+
     on<AuthEventShouldRegister>((event, emit) {
       emit(const AuthStateRegistering(
         exception: null,
@@ -54,9 +58,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await provider.sendEmailVerification();
       emit(state);
     });
+
     on<AuthEventRegister>((event, emit) async {
       final email = event.email;
       final password = event.password;
+
       try {
         await provider.createUser(
           email: email,
@@ -73,25 +79,98 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 // initialize
     on<AuthEventInitialize>((event, emit) async {
-      await provider.initialize();
-      final user = provider.currentUser;
-      if (user == null) {
-        emit(
+
+
+
+ // await provider.initialize();
+
+
+  final user = provider.currentUser;
+
+if(  user?.provider?.contains("password") ?? false)
+{
+
+  if (user == null) {
+    emit(
+      const AuthStateLoggedOut(
+        exception: null,
+        isLoading: false,
+      ),
+    );
+  }
+  else if (!user.isEmailVerified) {
+    emit(const AuthStateNeedsVerification(isLoading: false));
+  }
+  else {
+    emit(AuthStateLoggedIn(
+      user: user,
+      isLoading: false,
+    ));
+
+}
+}
+else{
+  emit(
+    const AuthStateLoggedOut(
+      exception: null,
+      isLoading: false,
+    ),
+  );
+}
+
+});
+
+// log in
+
+    on<AuthEventLoginWithGoogle>(
+        (event, emit) async{
+      // emit(
+      //   const AuthStateLoggedOut(
+      //     exception: null,
+      //     isLoading: true,
+      //     loadingText: 'Please wait while I log you in',
+      //   ),
+      // );in
+      emit(
           const AuthStateLoggedOut(
             exception: null,
-            isLoading: false,
-          ),
-        );
-      } else if (!user.isEmailVerified) {
-        emit(const AuthStateNeedsVerification(isLoading: false));
-      } else {
+            isLoading: true,
+            loadingText: 'Please wait while I log you in',
+          ));
+
+
+      try {
+
+
+          await provider.googleLogIn();
+
+         var user = provider.googleUser;
+
+       emit(AuthStateLoggedIn(
+         user: user,
+         isLoading: false,
+       ));
+
         emit(AuthStateLoggedIn(
           user: user,
           isLoading: false,
         ));
+
+      } on Exception catch (e) {
+        emit(
+          AuthStateLoggedOut(
+            exception: e,
+            isLoading: false,
+          ),
+        );
+
+
       }
+
+
     });
-// log in
+
+
     on<AuthEventLogIn>((event, emit) async {
       emit(
         const AuthStateLoggedOut(
@@ -140,7 +219,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 // log out
     on<AuthEventLogOut>((event, emit) async {
       try {
-        await provider.logOut();
+
+          String? myprovider = event.emailUser?.provider ;
+
+        if(myprovider?.contains("password") ?? false) {
+          await provider.logOut();
+
+        }
+       else {
+
+          await provider.googlelogOut();
+        }
+
+
         emit(
           const AuthStateLoggedOut(
             exception: null,

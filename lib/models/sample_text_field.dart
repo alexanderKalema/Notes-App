@@ -11,11 +11,12 @@ class SampleTextField extends StatelessWidget {
   final bool? autocorrect;
   final bool? obscureText;
   final bool? keyboardType;
+  final IconButton? icon;
 
 
   const SampleTextField({
      this.mychild, this.text,this.enableSuggestions,this.autocorrect,this.obscureText,  this.keyboardType, this.controller
-  });
+  ,this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,8 @@ class SampleTextField extends StatelessWidget {
     return SampleContainer(
       mychild: Container(
           padding: EdgeInsets.fromLTRB(25,20,20,20),
-          child: TextFormField(
+          child: TextField(
+
             controller: controller,
 
           enableSuggestions: enableSuggestions ?? false,
@@ -37,7 +39,7 @@ class SampleTextField extends StatelessWidget {
             //onEditingComplete: ()=>TextInput.finishAutofillContext(),
             decoration: InputDecoration(
 
-
+           suffixIcon: icon,
             hintStyle: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w100,
@@ -53,3 +55,40 @@ class SampleTextField extends StatelessWidget {
       );
   }
 }
+class TextFieldForEditing extends StatelessWidget {
+
+  TextEditingController controller;
+
+   TextFieldForEditing({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      style: const TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.w900,
+        fontFamily: "NeofontRoman",
+        //color: Colors.grey.withOpacity(0.5),
+      ),
+      textAlign: TextAlign.center,
+      decoration: InputDecoration(
+        hintStyle: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w100,
+          fontFamily: "NeofontRoman",
+          color: Colors.grey.withOpacity(0.5),
+        ),
+        enabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey),
+        ),
+        focusedBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.black),
+        ),
+        //contentPadding: EdgeInsets.fromLTRB(10, 40, 0, 40),
+        hintText: "Title goes here",
+      ),
+    );
+  }
+}
+

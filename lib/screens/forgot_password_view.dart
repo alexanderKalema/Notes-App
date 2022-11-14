@@ -12,14 +12,14 @@ import '../services/auth/bloc/auth_state.dart';
 import '../utils/dialogs/error_dialog.dart';
 import '../utils/dialogs/password_reset_email_sent_dialog.dart';
 
-class ForgotPassswordView extends StatefulWidget {
-  const ForgotPassswordView({Key? key}) : super(key: key);
+class ForgotPasswordView extends StatefulWidget {
+  const ForgotPasswordView({Key? key}) : super(key: key);
 
   @override
-  State<ForgotPassswordView> createState() => _ForgotPassswordViewState();
+  State<ForgotPasswordView> createState() => _ForgotPasswordViewState();
 }
 
-class _ForgotPassswordViewState extends State<ForgotPassswordView> {
+class _ForgotPasswordViewState extends State<ForgotPasswordView> {
 
 
 
@@ -87,7 +87,7 @@ class _ForgotPassswordViewState extends State<ForgotPassswordView> {
                   ),
                   callback: (){
                     context.read<AuthBloc>().add(
-                      const AuthEventLogOut(),
+                       AuthEventLogOut(),
                     );
                   },
                 ),
