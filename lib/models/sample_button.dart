@@ -86,11 +86,10 @@ class LeveledButton extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-            letterSpacing: 1,
-            fontWeight: FontWeight.bold,
-            fontFamily: "InterSemiBold",
-            color: Colors.white,
-            fontSize: 15),
+          fontFamily: "TailwindRegular",
+          color: Colors.black.withOpacity(0.9),
+          fontSize: 18
+        ),
       ),
     ),
     style: ButtonStyle(

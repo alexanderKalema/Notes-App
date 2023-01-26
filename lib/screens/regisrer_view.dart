@@ -97,10 +97,10 @@ class RegisterViewState extends State<RegisterView> {
                      Text(
                          "Register ",
                        style: TextStyle(
-                         fontSize: 40,
+                           fontSize: 40,
+                           letterSpacing: 1.0,
                            fontWeight: FontWeight.bold,
-                           fontFamily: "InterSemiBold"
-                       )
+                           fontFamily: "TailwindRegular")
                      ),
                      SizedBox(height: 10),
 
@@ -110,7 +110,7 @@ class RegisterViewState extends State<RegisterView> {
 
                          letterSpacing: 0.6,
                          fontWeight: FontWeight.bold,
-                         fontFamily: "NeofontRoman"
+                         fontFamily: "TailwindSRegular"
                      )
                      )
                    ],
@@ -197,6 +197,7 @@ class RegisterViewState extends State<RegisterView> {
                          autocorrect: false,
                          keyboardType: true,),
                         SampleTextField(text: "Password",
+                         obscureText: true,
                          controller: _password,
                          enableSuggestions: false,
                          autocorrect: false,
@@ -208,9 +209,9 @@ class RegisterViewState extends State<RegisterView> {
                                Text("Register",
                                    style: TextStyle(
 
-                                     fontFamily: "InterBold",
-                                     color:Colors.black.withOpacity(0.9),
                                      fontWeight: FontWeight.w500,
+                                     fontFamily: "TailwindRegular",
+                                     color: Colors.black.withOpacity(0.9),
 
                                    )),
                                SizedBox(width: 5,),

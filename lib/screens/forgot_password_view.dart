@@ -72,22 +72,17 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
             children: [
               SizedBox(height: 40,),
               Container(
-                margin: EdgeInsets.only(left:10, top:20),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20))
-                ),
-                child: SmallButton(
+                margin: EdgeInsets.only(left: 10, top: 20),
 
-
-                  mychild: Icon(
+                child: IconButton(
+                  icon: Icon(
                     Icons.arrow_back,
-                    size: 35,
-                    color: Color(0xFF2C2C2C).withOpacity(0.8),
+                    size: 45,
+                    color: Color(0xFF2C2C2C).withOpacity(0.9),
                   ),
-                  callback: (){
+                  onPressed: () {
                     context.read<AuthBloc>().add(
-                       AuthEventLogOut(),
+                      AuthEventLogOut(),
                     );
                   },
                 ),
@@ -103,16 +98,16 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     SizedBox(height: 10),
                     Center(
                       child: Text(
-                          " Forgot Password",
+                          " Forgot Password ?",
                           style: TextStyle(
-                              color:Color(0xFF2C2C2C),
-                              letterSpacing: -1,
-                              fontSize: 30,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: "InterSemiBold"
+                              fontSize: 35,
+                              letterSpacing: 1.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "TailwindRegular"
                           )
                       ),
                     ),
+                    SizedBox(height: 5),
                     Center(
                       child: Image(
                         image: AssetImage("assets/images/forgot_imahe.png"),
@@ -136,12 +131,12 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                       child: Column(
                         children: [
                           SizedBox(height: 30,),
-                         Text("Enter your email, so we can send you a password reset link.",
+                         Text("Enter your email, so we can send you a password reset link (Check spam folder).",
                         style: TextStyle(
 
-                          fontFamily: "InterRegular",
-                          color:Colors.black.withOpacity(0.9),
-                          fontWeight: FontWeight.w600,
+                            letterSpacing: 0.6,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "TailwindSRegular"
                         )),       SizedBox(height: 20,),
                           SampleTextField(text: "Email",
                             controller: _controller,
@@ -161,8 +156,8 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                                   Text("Send reset link",
                                       style: TextStyle(
                                         fontWeight: FontWeight.w500,
-                                        fontFamily: "InterBold",
-                                        color:Colors.black.withOpacity(0.9),
+                                        fontFamily: "TailwindRegular",
+                                        color: Colors.black.withOpacity(0.9),
 
                                       )),
                                 ],

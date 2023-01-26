@@ -16,6 +16,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         exception: null,
         isLoading: false,
       ));
+
     });
 //forgot password
     on<AuthEventForgotPassword>((event, emit) async {
@@ -60,6 +61,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 
     on<AuthEventRegister>((event, emit) async {
+
+      emit(
+        const AuthStateLoggedOut(
+          exception: null,
+          isLoading: true,
+          loadingText: 'Please wait while I Register you ...',
+        ),
+      );
       final email = event.email;
       final password = event.password;
 
@@ -70,7 +79,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         );
         await provider.sendEmailVerification();
         emit(const AuthStateNeedsVerification(isLoading: false));
-      } on Exception catch (e) {
+      }
+      on Exception catch (e) {
         emit(AuthStateRegistering(
           exception: e,
           isLoading: false,

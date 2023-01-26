@@ -7,7 +7,6 @@ import '../models/drop_down.dart';
 import '../models/real_slider.dart';
 import '../services/auth/bloc/auth_bloc.dart';
 import '../services/auth/bloc/auth_event.dart';
-import '../services/auth/bloc/google_sign_in_provider.dart';
 import '../utils/dialogs/logout_dialog.dart';
 
 class SettingView extends StatefulWidget {
@@ -22,7 +21,7 @@ class _SettingViewState extends State<SettingView> {
   void dataPasser(){
     Map<dynamic, dynamic> myMap =
     { "cardColor" : DropdownItem.selectedValue ,
-      "fontSize" :  (SliderWidget.myvalue * 42) + 8,
+      "fontSize" :  (SliderWidget.myvalue * 42) + 13,
       "deleteConfirm": AnimatedSwitch.isEnabled,
     };
     Navigator.pop(context,
@@ -199,7 +198,7 @@ class _SettingViewState extends State<SettingView> {
                     )
                     ,
                     Text(
-                      "My Notes 1.0.0+1  \nDeveloped by Alexander Alema & Mikyas Worku. \nContact @alexanderkalema to report bugs or for any enquiries.\nMore updates to follow soon!",
+                      "My Notes 1.0.0+1  \nDeveloped by Alexander Alema . \nContact @alexanderkalema to report bugs or for any enquiries.\nMore updates to follow soon!",
                       style: TextStyle(
                         height: 1.8,
                           color:Color(0xFFa0acb8),

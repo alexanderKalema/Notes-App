@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:nibret_kifel/screens/create_update_note_view.dart';
 import 'package:nibret_kifel/screens/login_view.dart';
 import 'package:nibret_kifel/screens/notes_list_view.dart';
@@ -99,7 +100,12 @@ class HomePage extends StatelessWidget {
         } else if (state is AuthStateRegistering) {
           return const RegisterView();
         } else {
-          return const Text("hjhj");
+          return const Scaffold(
+            body: Center(
+                child: SpinKitFadingFour(
+                  color: Color(0xFFffcb47),
+                )),
+          );
         }
 
 

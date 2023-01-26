@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:nibret_kifel/models/get_arguments.dart';
 import 'package:nibret_kifel/models/sample_text_field.dart';
@@ -29,7 +30,7 @@ class _NotesViewState extends State<NotesView> {
 
   Map original =  {
     "cardColor" : "default",
-  "fontSize" : 12.0,
+  "fontSize" : 14.0,
   "deleteConfirm": true,
   };
 
@@ -70,7 +71,10 @@ class _NotesViewState extends State<NotesView> {
                       children: [Row(
                         children: [
                           Expanded(child: Container()),
-                          const Text("My Notes", style: TextStyle(letterSpacing:1.3,fontSize: 34, fontFamily: "TailwindSRegular", fontWeight: FontWeight.w900),),
+                          const Text("My Notes", style: TextStyle(fontSize: 40,
+                              letterSpacing: 1.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "TailwindRegular"),),
                           Expanded(child: Container()),
                            IconButton( onPressed:()async  {
 
@@ -243,7 +247,10 @@ class _NotesViewState extends State<NotesView> {
                                             ),);
                                           }
                                         default:
-                                          return const CircularProgressIndicator();
+                                          return Center(
+                                              child: SpinKitFadingFour(
+                                                color: Color(0xFFffcb47),
+                                              ));
                                       }
                                     },
                                   );

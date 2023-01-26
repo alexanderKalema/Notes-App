@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:nibret_kifel/models/sample_text_field.dart';
 import 'package:nibret_kifel/services/auth/auth_service.dart';
@@ -266,7 +267,10 @@ if(text.isNotEmpty|| title.isNotEmpty) {
                       )),
                     );
                   default:
-                    return CircularProgressIndicator();
+                    return Center(
+                        child: SpinKitFadingFour(
+                          color: Color(0xFFffcb47),
+                        ));;
                 }
               },
             ),
