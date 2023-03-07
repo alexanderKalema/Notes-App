@@ -1,19 +1,15 @@
-import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart' as quill hide Text;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:Notes_App/models/get_arguments.dart';
+import '../services/auth/auth_service.dart';
+import '../services/cloud/cloud_note.dart';
+import '../services/cloud/firebase_cloud_storage.dart';
+import '../services/crud/db_service.dart';
 
-import 'package:nibret_kifel/models/sample_text_field.dart';
-import 'package:nibret_kifel/services/auth/auth_service.dart';
-
-import 'package:nibret_kifel/models/get_arguments.dart';
-import 'package:nibret_kifel/services/cloud/cloud_note.dart';
-import 'package:nibret_kifel/services/cloud/firebase_cloud_storage.dart';
-import 'package:nibret_kifel/services/crud/note_service.dart';
-import 'package:replay_bloc/replay_bloc.dart';
-
-class CreateUpdateNoteView extends StatefulWidget{
+class CreateUpdateNoteView extends StatefulWidget {
   const CreateUpdateNoteView({Key? key}) : super(key: key);
 
   @override
@@ -21,21 +17,39 @@ class CreateUpdateNoteView extends StatefulWidget{
 }
 
 class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
+  late final DBService _name;
   CloudNote? _note;
   late final FirebaseCloudStorage _notesService;
-  late final TextEditingController _textController;
-  late final TextEditingController _titleController;
-  late final mycubit;
-  late final NotesService _name;
+
+  TextEditingController _titleController =
+      TextEditingController(text: 'Untitled Document');
+
+  late quill.QuillController _controller;
 
   @override
   void initState() {
-    mycubit = ListCubit();
     _notesService = FirebaseCloudStorage();
-    _textController = TextEditingController();
-    _titleController = TextEditingController();
-    _name = NotesService();
+    _name = DBService();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _titleController.removeListener(_textControllerListener);
+    _controller.removeListener(_textControllerListener);
+    super.dispose();
+    _titleController.dispose();
+  }
+
+  void close() async {
+    await _deleteNoteIfTextIsEmpty();
+    await _saveNoteIfTextNotEmpty();
+    Navigator.pop(context);
+  }
+
+  void _setupTextControllerListener() {
+    _controller.addListener(_textControllerListener);
+    _titleController.addListener(_textControllerListener);
   }
 
   void _textControllerListener() async {
@@ -44,31 +58,54 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     if (note == null) {
       return;
     }
-    final text = _textController.text;
+    final text = _controller.document.toPlainText().trim();
     final title = _titleController.text;
 
-
-
-
-
-
-if(text.isNotEmpty|| title.isNotEmpty) {
-  await _notesService.updateNote(
-    documentId: note.documentId,
-    text: text,
-    title: title,
-    date: widgetNote![1],
-  );
-}
-
+    var json = jsonEncode(_controller.document.toDelta().toJson());
+    if (text.isNotEmpty || title.isNotEmpty) {
+      await _notesService.updateNote(
+        documentId: note.documentId,
+        plainText: text,
+        jsonText: json,
+        title: title,
+        date: widgetNote![1],
+      );
+    }
   }
 
+  _deleteNoteIfTextIsEmpty() async {
+    final note = _note;
+    print("dcc forever");
+    if (_controller.document.toPlainText().trim().isEmpty &&
+        (_titleController.text == 'Untitled Document') &&
+        note != null) {
+      print("marvel?");
+      await _notesService.deleteNote(documentId: note.documentId);
+      await _name.deleteColor(id: note.documentId);
+    }
+  }
 
-  void _setupTextControllerListener() {
-    _textController.removeListener(_textControllerListener);
-    _textController.addListener(_textControllerListener);
-    _titleController.removeListener(_textControllerListener);
-    _titleController.addListener(_textControllerListener);
+  _saveNoteIfTextNotEmpty() async {
+    final widgetNote = context.getArgument<List<dynamic>>();
+    final note = _note;
+
+    var json = jsonEncode(_controller.document.toDelta().toJson());
+    final title = _titleController.text;
+    print(_controller.document.toPlainText().trim().isNotEmpty);
+    print('from saving am coming ${json} ${title}');
+    if (note != null &&
+        (_controller.document.toPlainText().trim().isNotEmpty ||
+            title != 'Untitled Document')) {
+      print("so your coming here");
+      await _notesService.updateNote(
+        documentId: note.documentId,
+        plainText: _controller.document.toPlainText(),
+        jsonText: json,
+        title: title,
+        date: widgetNote![1],
+      );
+      await adder();
+    }
   }
 
   Future<CloudNote> createOrGetExistingNote(BuildContext context) async {
@@ -76,70 +113,55 @@ if(text.isNotEmpty|| title.isNotEmpty) {
 
     if (widgetNote![0] != null) {
       _note = widgetNote[0];
-      _textController.text = widgetNote[0].text;
-      _titleController.text = widgetNote[0].title;
-      return widgetNote[0];
-    }
-
-    final existingNote = _note;
-    if (existingNote != null) {
-      return existingNote;
-    }
-
-
-    final currentUser = AuthService.firebase().currentUser!;
-    final userId = currentUser.id;
-    final nameuser = await _name.getNames(id: userId);
-    final newNote = await _notesService.createNewNote(ownerUserId: userId, firstName: nameuser.firstName , lastName: nameuser.lastName);
-    _note = newNote;
-
-    return newNote;
-
-  }
-
-  void _deleteNoteIfTextIsEmpty() {
-    final note = _note;
-
-    if (_textController.text.isEmpty && _titleController.text.isEmpty && note != null) {
-      _notesService.deleteNote(documentId: note.documentId);
-    }
-  }
-
-  void _saveNoteIfTextNotEmpty() async {
-    final widgetNote = context.getArgument<List<dynamic>>();
-    final note = _note;
-
-
-
-
-
-    final text = _textController.text;
-    final title = _titleController.text;
-    if (note != null && (text.isNotEmpty || title.isNotEmpty)) {
-
-      //
-      // int colNum;
-      // String colType;
-      //
-      // int randomNumber = Random().nextInt(2);
-      // if(randomNumber == 0) {colType = "strong";}
-      // else {colType = "weak";}
-      //
-      //
-      // int myrandomNumber = Random().nextInt(17);
-      // colNum = myrandomNumber;
-      //
-      // print("am i coming here");
-      // await _name.createColor(colType: colType, colNum: colNum, id: note.documentId);
-      //
-      //
-
-      await _notesService.updateNote(
-        documentId: note.documentId,
-        text: text,
-        title: title,
-        date: widgetNote![1],
+      var myJSON = jsonDecode(''' ${widgetNote[0].jsonText} ''');
+      _controller = quill.QuillController(
+        document: quill.Document.fromJson(myJSON),
+        selection: TextSelection.collapsed(offset: 0),
       );
+
+      _titleController.text = widgetNote[0].title;
+
+      return widgetNote[0];
+    } else {
+      final existingNote = _note;
+      print("pleassse come here ${existingNote}");
+      int colNum;
+      String colType;
+
+      int randomNumber = Random().nextInt(2);
+      if (randomNumber == 0) {
+        colType = "strong";
+      } else {
+        colType = "weak";
+      }
+
+      int myrandomNumber = Random().nextInt(17);
+      colNum = myrandomNumber;
+
+      if (existingNote != null) {
+        print("dccc22");
+        return existingNote;
+      }
+
+      _controller = quill.QuillController(
+        document: quill.Document(),
+        selection: TextSelection.collapsed(offset: 0),
+      );
+
+      final currentUser = AuthService.firebase().currentUser!;
+      final userId = currentUser.id;
+
+      final nameuser = await _name.getNames(id: userId);
+
+      final newNote = await _notesService.createNewNote(
+          ownerUserId: userId,
+          firstName: nameuser.firstName,
+          lastName: nameuser.lastName);
+      _note = newNote;
+      await _name.createColor(
+          colType: colType, colNum: colNum, id: newNote.documentId);
+
+      return newNote;
     }
   }
 
@@ -149,162 +171,137 @@ if(text.isNotEmpty|| title.isNotEmpty) {
     String colType;
 
     int randomNumber = Random().nextInt(2);
-    if(randomNumber == 0) {colType = "strong";}
-    else {colType = "weak";}
-
+    if (randomNumber == 0) {
+      colType = "strong";
+    } else {
+      colType = "weak";
+    }
 
     int myrandomNumber = Random().nextInt(17);
     colNum = myrandomNumber;
 
-   // print("am i coming here");
+    // print("am i coming here");
 
-    await _name.createColor(colType: colType, colNum: colNum, id: note!.documentId);
-
-  }
-
-  @override
-  void dispose() async {
-    super.dispose();
-     mycubit.close();
-     mycubit.clearHistory();
-    _deleteNoteIfTextIsEmpty();
-    _saveNoteIfTextNotEmpty();
-    await adder();
-    _textController.dispose();
-    _titleController.dispose();
-
-
+    await _name.updateColor(
+        colType: colType, colNum: colNum, id: note!.documentId);
   }
 
   @override
   Widget build(BuildContext context) {
-    final widgetNote = context.getArgument<List<dynamic>>();
-    return Scaffold(
-      body: Container(
-        color: Colors.white,
-        padding: EdgeInsets.only(left: 10, right: 10, top: 60),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children:  [
-                IconButton(
-                  onPressed: () {
-
-                    //dispose();
-                    Navigator.pop(context);
-
-                    },
-                  icon: Icon(Icons.arrow_back,color: Color(0xFF555555),size: 30,),
-                ),
-                Expanded(child: SizedBox()),
-                IconButton(
-                    onPressed:() {
-                        mycubit.undo();
-
-                      _textController.text =  mycubit.state.items.last;
-
-                    },
-                    icon: Icon(Icons.undo_outlined,color: Color(0xFF555555),size: 30,)),
-
-                SizedBox(width: 10,),
-                IconButton(
-                    onPressed: () {
-                      mycubit.redo();
-                      _textController.text =  mycubit.state.items.last;
-                    }, icon: Icon(Icons.redo_outlined,color: Color(0xFF555555),size: 30,)),
-                SizedBox(width: 10,),
-
-                IconButton(onPressed: () {
-
-                  Navigator.pop(context);
-
-                } , icon: Icon(Icons.check, color: Color(0xFF555555), size: 30,))
-              ],
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              child: TextFieldForEditing( controller: _titleController,),
-            ),
-            SizedBox(height: 30,),
-
-         FutureBuilder(
-
-              future:
-
-              createOrGetExistingNote(context),
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.done:
-                    _setupTextControllerListener();
-                    return Expanded(
-                      child: SingleChildScrollView(
-
-                          child:TextField(
-
-                        controller: _textController,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                          onChanged:  (value){
-
-                          mycubit.newItem(value);
-                            //thisList = ListCubit.myList;
-
-                          },
-                          style: TextStyle(
-                        fontSize: widgetNote![2] as double,
-                          height: 2.0
+    return FutureBuilder(
+        future: createOrGetExistingNote(context),
+        builder: (context, snapshot) {
+          _setupTextControllerListener();
+          if (snapshot.hasData && !snapshot.hasError
+          ) {
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.white,
+                elevation: 0,
+                bottom: PreferredSize(
+                  preferredSize: const Size.fromHeight(1),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.blueGrey,
+                        width: 0.1,
                       ),
-                        decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            contentPadding: EdgeInsets.only(
-                                left: 15, bottom: 11, top: 11, right: 15),
-                            hintText: "Body goes here"),
-                      )),
-                    );
-                  default:
-                    return Center(
-                        child: SpinKitFadingFour(
-                          color: Color(0xFFffcb47),
-                        ));;
-                }
-              },
-            ),
-
-
-
-
-          ],
-        ),
-      ),
-    );
+                    ),
+                  ),
+                ),
+                actions: [
+                  SizedBox(
+                    width: 10,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      close();
+                    },
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Color(0xFF555555),
+                      size: 30,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  const Image(
+                    image: AssetImage("assets/images/launcher_icon.png"),
+                    height: 60,
+                    width: 40,
+                  ),
+                  const SizedBox(width: 10),
+                  SizedBox(
+                    width: 180,
+                    child: TextField(
+                      controller: _titleController,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.blue,
+                          ),
+                        ),
+                        contentPadding: EdgeInsets.only(left: 10),
+                      ),
+                      onSubmitted: (value) {
+                        // updateTitle(ref, value)
+                      },
+                    ),
+                  ),
+                  Expanded(child: SizedBox()),
+                  ElevatedButton.icon(
+                      icon: Icon(Icons.save),
+                      onPressed: () async {
+                        // var json = jsonEncode(
+                        //     _controller.document.toDelta().toJson());
+                        //    print("json is ${json}");
+                        // print(
+                        //   "to plain text is ${_controller.document.toPlainText()}");
+                        await _saveNoteIfTextNotEmpty();
+                      },
+                      label: Text("Save")),
+                  SizedBox(
+                    width: 10,
+                  ),
+                ],
+              ),
+              body: Container(
+                  padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          child: quill.QuillEditor.basic(
+                            controller: _controller,
+                            //  embedBuilders: FlutterQuillEmbeds.builders(),
+                            readOnly: false, // true for view only mode
+                          ),
+                        ),
+                      ),
+                      quill.QuillToolbar.basic(controller: _controller),
+                    ],
+                  )),
+            );
+          } else {
+            return  Scaffold(
+              body: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                          Icons.signal_wifi_connected_no_internet_4_outlined,
+                      color:Colors.grey,
+                      size:90),
+                      SizedBox(height: 20,),
+                      SpinKitFadingFour(
+                color: Colors.grey,
+              ),
+                    ],
+                  )),
+            );
+          }
+        });
   }
-}
-
-
-class ListData{
-  final List<String> items;
-  ListData(this.items);
-}
-
-
-class ListCubit extends ReplayCubit<ListData>{
-
-    List myList = [];
-
-  ListCubit(): super(ListData([]));
-
-  void newItem(String text){
-    final items = [... state.items];
-    items.add(text);
-
-    myList = items;
-    emit(ListData (items));
-
-  }
-
 }

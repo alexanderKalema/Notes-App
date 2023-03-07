@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:nibret_kifel/utils/dialogs/generic_dialog.dart';
+import 'package:Notes_App/utils/dialogs/generic_dialog.dart';
 
-Future<void> showPasswordResetSentDialog(BuildContext context) {
+Future<void> showPasswordResetSentDialog({
+  required BuildContext context,
+  required Color color,
+  required String title,
+  required String bcontent,
+  required String fcontent,
+}) {
   return showGenericDialog<void>(
     icon: Icons.send_rounded,
     context: context,
-    title: 'Password Reset',
-    content:
-    'We have now sent you a password reset link. Please check your email for more information.',
+    color: color,
+    fcont: fcontent,
+    title: title,
+    content: bcontent,
     optionsBuilder: () => {
-      'OK': null,
+      fcontent: null,
     },
   );
 }

@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:nibret_kifel/utils/dialogs/generic_dialog.dart';
+import 'package:Notes_App/utils/dialogs/generic_dialog.dart';
 
 Future<void> showErrorDialog(
-  BuildContext context,
-  String text,
-) {
+    {required BuildContext context,
+    required Color color,
+    required String title,
+    required String bcontent,
+    required String fcontent,
+    required String lcontent}) {
   return showGenericDialog<void>(
     icon: Icons.error,
     context: context,
-    title:"An Error Occured",
-    content: text,
-    optionsBuilder: () => {
-      'Ok': null,
-      'Cancel':null
-    },
+    color: color,
+    fcont: fcontent,
+    title: title,
+    content: bcontent,
+    optionsBuilder: () => {fcontent: null, lcontent: null},
   );
 }

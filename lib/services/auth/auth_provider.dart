@@ -1,4 +1,4 @@
-import 'package:nibret_kifel/services/auth/auth_user.dart';
+import 'package:Notes_App/services/auth/auth_user.dart';
 
 abstract class AuthProvider {
   Future<void> initialize();
@@ -16,8 +16,6 @@ abstract class AuthProvider {
   });
 
   Future<void> logOut();
-
-
 
   Future<void> sendEmailVerification();
 

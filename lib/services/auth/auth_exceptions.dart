@@ -1,4 +1,3 @@
-
 // login exceptions
 class UserNotFoundAuthException implements Exception {}
 

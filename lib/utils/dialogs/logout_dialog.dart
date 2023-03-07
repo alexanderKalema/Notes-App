@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:nibret_kifel/utils/dialogs/generic_dialog.dart';
+import 'package:Notes_App/utils/dialogs/generic_dialog.dart';
 
-Future<bool> showLogOutDialog(BuildContext context) {
+Future<bool> showLogOutDialog(BuildContext context, Color color, String title,
+    String bcontent, String fcontent, String lcontent) {
   return showGenericDialog<bool>(
     icon: Icons.logout_rounded,
     context: context,
-    title: 'Log out',
-    content: 'Are you sure you want to log out?',
+    title: title,
+    color: color,
+    fcont: fcontent,
+    content: bcontent,
     optionsBuilder: () => {
-      'Cancel': false,
-      'Log out': true,
+      lcontent: false,
+      fcontent: true,
     },
   ).then(
-        (value) => value ?? false,
+    (value) => value ?? false,
   );
 }
