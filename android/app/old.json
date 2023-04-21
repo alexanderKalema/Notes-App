@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "245690076634",
+    "project_id": "notes-app-85820",
+    "storage_bucket": "notes-app-85820.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:245690076634:android:127ba7b7e105c87f4d04e3",
+        "android_client_info": {
+          "package_name": "com.ethio.NotesApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "245690076634-42k9j11uud8v7ih07k4rat2n6rdc0tsf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgtm5FEjl55hu8VxW-JLuZ1ztzZUK9Uos"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "245690076634-42k9j11uud8v7ih07k4rat2n6rdc0tsf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

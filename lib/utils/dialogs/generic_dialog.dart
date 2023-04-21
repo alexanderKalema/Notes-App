@@ -8,6 +8,8 @@ Future<T?> showGenericDialog<T>({
   required BuildContext context,
   required String title,
   required String content,
+  required String fcont,
+  required Color color,
   IconData? icon,
   required DialogOptionBuilder optionsBuilder,
 }) {
@@ -17,7 +19,7 @@ Future<T?> showGenericDialog<T>({
       context: context,
       builder: (context) {
         return Dialog(
-          insetPadding: EdgeInsets.symmetric(horizontal: 25,vertical: 40),
+          insetPadding: EdgeInsets.symmetric(horizontal: 25, vertical: 40),
           backgroundColor: Colors.white,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
@@ -27,18 +29,20 @@ Future<T?> showGenericDialog<T>({
             height: Sizes.getTotalHeight(context) * 0.35,
             width: double.maxFinite,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 20),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 30.0, horizontal: 20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Center(
-                    child: Icon(icon,
+                    child: Icon(
+                      icon,
                       size: 80,
-                      color: Color(0xFFffcb47) ,
+                      color: color,
                     ),
                   ),
-                  SizedBox(height:10),
+                  SizedBox(height: 10),
                   Text(
                     title,
                     style: TextStyle(
@@ -53,13 +57,10 @@ Future<T?> showGenericDialog<T>({
                   Text(
                     content,
                     style: TextStyle(
-                        color:Color(0xFFa0acb8),
+                        color: Color(0xFFa0acb8),
                         fontSize: 16,
                         fontFamily: "PoppinsRegular"),
                   ),
-
-
-
                   Expanded(
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -69,33 +70,43 @@ Future<T?> showGenericDialog<T>({
                           ...(options.keys).map((optionTitle) {
                             final value = options[optionTitle];
                             return Container(
-                              height:Sizes.getTotalHeight(context) * 0.081,
+                              height: Sizes.getTotalHeight(context) * 0.081,
                               width: Sizes.getTotalWidth(context) * 0.375,
-                              //padding: EdgeInsets.all(20),
                               margin: EdgeInsets.only(right: 10),
                               child: TextButton(
-
                                   style: ButtonStyle(
-                                      textStyle: MaterialStateProperty.resolveWith((states) {
+                                      textStyle:
+                                          MaterialStateProperty.resolveWith(
+                                              (states) {
                                         return const TextStyle(
-                                            color:Color(0xFFa0acb8),
+                                            color: Color(0xFFa0acb8),
                                             fontSize: 19,
                                             fontFamily: "PoppinsRegular");
                                       }),
-                                      overlayColor: MaterialStateProperty.all<Color>(
-                            (optionTitle =="Yes"||optionTitle =="Log out"  || optionTitle =="Ok")? Color(0xFFffcb47):Colors.grey.withOpacity(0.1),),
-                                      foregroundColor:  MaterialStateProperty.resolveWith((states) =>
-                                      (optionTitle =="Yes"||optionTitle =="Log out"  || optionTitle =="Ok")? Colors.white:Colors.grey.withOpacity(0.5)
+                                      overlayColor:
+                                          MaterialStateProperty.all<Color>(
+                                        (optionTitle == fcont)
+                                            ? color
+                                            : Colors.grey.withOpacity(0.1),
                                       ),
+                                      foregroundColor:
+                                          MaterialStateProperty.resolveWith(
+                                              (states) => (optionTitle == fcont)
+                                                  ? Colors.white
+                                                  : Colors.grey
+                                                      .withOpacity(0.5)),
                                       backgroundColor:
-                                          MaterialStateColor.resolveWith((states) {
-
-                                        return (optionTitle =="Yes"||optionTitle =="Log out"  || optionTitle =="Ok")? Color(0xFFffcb47).withOpacity(0.9):Colors.grey.withOpacity(0.1);
+                                          MaterialStateColor.resolveWith(
+                                              (states) {
+                                        return (optionTitle == fcont)
+                                            ? color
+                                            : Colors.grey.withOpacity(0.1);
                                       }),
                                       shape: MaterialStateProperty.all<
                                               RoundedRectangleBorder>(
                                           RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(18.0),
+                                        borderRadius:
+                                            BorderRadius.circular(18.0),
                                         //side: BorderSide(color: Colors.red)
                                       ))),
                                   onPressed: () {
@@ -112,10 +123,6 @@ Future<T?> showGenericDialog<T>({
                       ),
                     ),
                   )
-
-
-
-
                 ],
               ),
             ),

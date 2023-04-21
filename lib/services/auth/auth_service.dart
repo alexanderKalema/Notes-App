@@ -1,21 +1,21 @@
-import 'package:nibret_kifel/services/auth/auth_provider.dart';
-import 'package:nibret_kifel/services/auth/auth_user.dart';
-import 'package:nibret_kifel/services/auth/firebase_auth_provider.dart';
-
-import 'bloc/google_sign_in_provider.dart';
+import 'package:Notes_App/services/auth/auth_provider.dart';
+import 'package:Notes_App/services/auth/auth_user.dart';
+import 'package:Notes_App/services/auth/firebase_auth_provider.dart';
+import 'google_sign_in_provider.dart';
 
 class AuthService implements AuthProvider {
   final AuthProvider FirebaseProvider;
-   GoogleSignInProvider? googleProvider;
+  GoogleSignInProvider? googleProvider;
 
+  AuthService({required this.FirebaseProvider, this.googleProvider});
 
-   AuthService({required this.FirebaseProvider, this.googleProvider});
+  factory AuthService.firebase() =>
+      AuthService(FirebaseProvider: FirebaseAuthProvider());
+  factory AuthService.googleLogin() => AuthService(
+      googleProvider: GoogleSignInProvider(),
+      FirebaseProvider: FirebaseAuthProvider());
 
-  factory AuthService.firebase() => AuthService( FirebaseProvider: FirebaseAuthProvider());
-  factory AuthService.googleLogin() => AuthService(googleProvider:GoogleSignInProvider(), FirebaseProvider: FirebaseAuthProvider());
-
-  Future<void> googleLogIn() async =>  await googleProvider?.googleLogin();
-
+  Future<void> googleLogIn() async => await googleProvider?.googleLogin();
 
   @override
   Future<AuthUser> createUser({
@@ -45,13 +45,11 @@ class AuthService implements AuthProvider {
   @override
   Future<void> logOut() => FirebaseProvider.logOut();
 
-
-
-  Future<void>? googlelogOut() =>  googleProvider?.logOut();
-
+  Future<void>? googlelogOut() => googleProvider?.logOut();
 
   @override
-  Future<void> sendEmailVerification() => FirebaseProvider.sendEmailVerification();
+  Future<void> sendEmailVerification() =>
+      FirebaseProvider.sendEmailVerification();
 
   @override
   Future<void> initialize() => FirebaseProvider.initialize();

@@ -1,22 +1,18 @@
 import 'package:bloc/bloc.dart';
-import 'package:nibret_kifel/services/auth/auth_provider.dart';
-import 'package:nibret_kifel/services/auth/auth_service.dart';
-import 'package:nibret_kifel/services/auth/bloc/auth_event.dart';
-import 'package:nibret_kifel/services/auth/bloc/auth_state.dart';
+import 'package:Notes_App/services/auth/auth_service.dart';
+import 'package:Notes_App/services/bloc/auth_bloc/auth_event.dart';
+import 'package:Notes_App/services/bloc/auth_bloc/auth_state.dart';
+
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc(AuthService provider , )
-      : super(const AuthStateUninitialized(isLoading: true)) {
-
-
-
-
+  AuthBloc(
+    AuthService provider,
+  ) : super(const AuthStateUninitialized(isLoading: true)) {
     on<AuthEventShouldRegister>((event, emit) {
       emit(const AuthStateRegistering(
         exception: null,
         isLoading: false,
       ));
-
     });
 //forgot password
     on<AuthEventForgotPassword>((event, emit) async {
@@ -61,12 +57,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 
     on<AuthEventRegister>((event, emit) async {
-
+      //  print("registering??");
       emit(
         const AuthStateLoggedOut(
           exception: null,
           isLoading: true,
-          loadingText: 'Please wait while I Register you ...',
+          loadingText: 'Please wait while I Register you',
         ),
       );
       final email = event.email;
@@ -79,93 +75,72 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         );
         await provider.sendEmailVerification();
         emit(const AuthStateNeedsVerification(isLoading: false));
-      }
-      on Exception catch (e) {
+      } on Exception catch (e) {
         emit(AuthStateRegistering(
           exception: e,
           isLoading: false,
         ));
       }
     });
-// initialize
+
+
     on<AuthEventInitialize>((event, emit) async {
 
+      final user = provider.currentUser;
+
+      if ((user?.provider?.contains("password") ?? false) ||
+          (user?.provider?.contains("google") ?? false)) {
 
 
- // await provider.initialize();
-
-
-  final user = provider.currentUser;
-
-if(  user?.provider?.contains("password") ?? false)
-{
-
-  if (user == null) {
-    emit(
-      const AuthStateLoggedOut(
-        exception: null,
-        isLoading: false,
-      ),
-    );
-  }
-  else if (!user.isEmailVerified) {
-    emit(const AuthStateNeedsVerification(isLoading: false));
-  }
-  else {
-    emit(AuthStateLoggedIn(
-      user: user,
-      isLoading: false,
-    ));
-
-}
-}
-else{
-  emit(
-    const AuthStateLoggedOut(
-      exception: null,
-      isLoading: false,
-    ),
-  );
-}
-
-});
+        if (user == null) {
+          emit(
+            const AuthStateLoggedOut(
+              exception: null,
+              isLoading: false,
+            ),
+          );
+        } else if (!user.isEmailVerified) {
+          emit(const AuthStateNeedsVerification(isLoading: false));
+        } else {
+          emit(AuthStateLoggedIn(
+            user: user,
+            isLoading: false,
+          ));
+        }
+      } else {
+        emit(
+          const AuthStateLoggedOut(
+            exception: null,
+            isLoading: false,
+          ),
+        );
+      }
+    });
 
 // log in
 
-    on<AuthEventLoginWithGoogle>(
-        (event, emit) async{
-      // emit(
-      //   const AuthStateLoggedOut(
-      //     exception: null,
-      //     isLoading: true,
-      //     loadingText: 'Please wait while I log you in',
-      //   ),
-      // );in
-      emit(
-          const AuthStateLoggedOut(
-            exception: null,
-            isLoading: true,
-            loadingText: 'Please wait while I log you in',
-          ));
+    on<AuthEventLoginWithGoogle>((event, emit) async {
 
+      emit(const AuthStateLoggedOut(
+        exception: null,
+        isLoading: true,
+        loadingText: 'Please wait while I log you in',
+      ));
 
       try {
+        await provider.googleLogIn();
 
-
-          await provider.googleLogIn();
-
-         var user = provider.googleUser;
-
-       emit(AuthStateLoggedIn(
-         user: user,
-         isLoading: false,
-       ));
+        var user = provider.googleUser;
 
         emit(AuthStateLoggedIn(
           user: user,
           isLoading: false,
         ));
 
+        emit(AuthStateLoggedIn(
+          user: user,
+          isLoading: false,
+        ));
       } on Exception catch (e) {
         emit(
           AuthStateLoggedOut(
@@ -173,13 +148,8 @@ else{
             isLoading: false,
           ),
         );
-
-
       }
-
-
     });
-
 
     on<AuthEventLogIn>((event, emit) async {
       emit(
@@ -229,18 +199,15 @@ else{
 // log out
     on<AuthEventLogOut>((event, emit) async {
       try {
+        String? myprovider = event.emailUser?.provider;
 
-          String? myprovider = event.emailUser?.provider ;
-
-        if(myprovider?.contains("password") ?? false) {
+        if ((myprovider?.contains("google") ?? false) ||
+            (myprovider?.contains("password") ?? false)) {
           await provider.logOut();
-
+          if ((myprovider?.contains("google") ?? false)) {
+            await provider.googlelogOut();
+          }
         }
-       else {
-
-          await provider.googlelogOut();
-        }
-
 
         emit(
           const AuthStateLoggedOut(

@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "239672331544",
-    "project_id": "notes-app-14085",
-    "storage_bucket": "notes-app-14085.appspot.com"
+    "project_number": "245690076634",
+    "project_id": "notes-app-85820",
+    "storage_bucket": "notes-app-85820.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:239672331544:android:d4d81426dc4afdb793e26d",
+        "mobilesdk_app_id": "1:245690076634:android:127ba7b7e105c87f4d04e3",
         "android_client_info": {
-          "package_name": "com.senbet.nibret_kifel"
+          "package_name": "com.ethio.NotesApp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "239672331544-c8g120pb3rv445pcvjhrrksk9ug8qqig.apps.googleusercontent.com",
+          "client_id": "245690076634-c92t93qq497q3nr889bkv2lh24tqt4ea.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ethio.NotesApp",
+            "certificate_hash": "28e7c40b92bd84a379c0ef6536afedcec9c24bb8"
+          }
+        },
+        {
+          "client_id": "245690076634-3qblteeccpg6qtkq4b35r223vkqc7sk2.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDXEgSJfIMN04Dnw9D0HwjtLegd5LuUs4w"
+          "current_key": "AIzaSyBgtm5FEjl55hu8VxW-JLuZ1ztzZUK9Uos"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "239672331544-c8g120pb3rv445pcvjhrrksk9ug8qqig.apps.googleusercontent.com",
+              "client_id": "245690076634-3qblteeccpg6qtkq4b35r223vkqc7sk2.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

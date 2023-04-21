@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:nibret_kifel/utils/dialogs/generic_dialog.dart';
+import 'package:Notes_App/utils/dialogs/generic_dialog.dart';
 
-Future<bool> showDeleteDialog(BuildContext context) {
+Future<bool> showDeleteDialog(BuildContext context, Color color, String title,
+    String bcontent, String fcontent, String lcontent) {
   return showGenericDialog<bool>(
     icon: Icons.delete_outline_sharp,
     context: context,
-    title: 'Delete',
-    content: 'Are you sure you want to delete this item?',
+    title: title,
+    color: color,
+    fcont: fcontent,
+    content: bcontent,
     optionsBuilder: () => {
-      'Cancel': false,
-      'Yes': true,
+      lcontent: false,
+      fcontent: true,
     },
   ).then(
-        (value) => value ?? false,
+    (value) => value ?? false,
   );
 }
