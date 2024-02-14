@@ -156,12 +156,9 @@ class DBService {
       {required String colType,
       required int colNum,
       required String id}) async {
-    print("how bout here1");
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
-    print("how bout here");
     final existing = await getColor(id: id);
-    print("how bout here2");
     if (existing.colorNumber == -1) {
       await db.insert(colTable, {
         ctypeCoulmn: colType,
