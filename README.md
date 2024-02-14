@@ -1,27 +1,34 @@
+## Screenshots
 
-# Notes_App
-A new Flutter project.
 
-## Getting Started
+&nbsp;
 
-This project is a starting point for a Flutter application.
+- Here I have included screenshots of the application.
+- &nbsp;
+<p align="center"  style="margin: 40px 0px;">
+  <img src="assets/screenshots/Splash_Page.jpg" width="576" style="margin-right: 10px;" />
+</p>
 
-A few resources to get you started if this is your first Flutter project:
+&nbsp;
+<p align="center"  style="margin: 40px 0px;">
+<img src="assets/screenshots/Login_Page.jpg" width="576" style="margin-right: 10px;" />
+</p>
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+&nbsp;
+<p align="center"  style="margin: 40px 0px;">
+  <img src="assets/screenshots/Home_Page.jpg" width="576" style="margin-right: 10px;" />
+</p>
+&nbsp;
+<p align="center"  style="margin: 40px 0px;">
+<img src="assets/screenshots/Editor_Page.jpg" width="576" style="margin-right: 10px;" />
+</p>
+
+&nbsp;
+<p align="center"  style="margin: 40px 0px;">
+<img src="assets/screenshots/Setting_Page.jpg" width="576" style="margin-right: 10px;" />
+</p>
+
 
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
-=======
-# Notes App
-
-A new Flutter project.
-
-This is my attempt to build an easy and quick app for taking notes that can be utilized by anyone.
-
-This is still the first version of the app ,and I plan to build an improved version in the coming days.
-
-This application uses Bloc for state management and firebase as a backend.
-
